@@ -1,29 +1,76 @@
 package rogue;
+
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 
+
 public class rogue {
+
+    public class CharacterStats {
+        //PLAYER
+        public static final int PLAYER_HEALTH = 100;
+        public static final int PLAYER_DAMAGE = 15;
+
+        //ENEMIES-EASY
+        public static final int BAT_HEALTH = 10;
+        public static final int BAT_DAMAGE = 5;
+        public static final int HOBBIT_HEALTH = 20;
+        public static final int HOBBIT_DAMAGE = 10;
+        public static final int LEPRECHAUN_HEALTH = 25;
+        public static final int LEPRECHAUN_DAMAGE = 8;
+        public static final int ELF_HEALTH = 30;
+        public static final int ELF_DAMAGE = 15;
+
+        //ENEMIES-MEDIUM
+        public static final int ZOMBIE_HEALTH = 35;
+        public static final int ZOMBIE_DAMAGE = 10;
+        public static final int ARCHER_HEALTH = 40;
+        public static final int ARCHER_DAMAGE = 10;
+        public static final int WEREWOLF_HEALTH = 45;
+        public static final int WEREWOLF_DAMAGE = 14;
+        public static final int ORC_HEALTH = 50;
+        public static final int ORC_DAMAGE = 12;
+        
+        //ENEMIES-HARD
+        public static final int RUST_MONSTER_HEALTH = 60;
+        public static final int RUST_MONSTER_DAMAGE = 10;
+        public static final int VAMPIRE_HEALTH = 70;
+        public static final int VAMPIRE_DAMAGE = 16;
+        public static final int PURPLE_WORM_HEALTH = 80;
+        public static final int PURPLE_WORM_DAMAGE = 18;
+        public static final int DRAGON_HEALTH = 100;
+        public static final int DRAGON_DAMAGE = 20;
+
+        //ITEMS
+    }
+    public class GameStats {
+        public static final int WIDTH = 50;
+        public static final int HEIGHT = 20;
+        public static final int CURRENT_LEVEL = 1;
+        public static final int GOLD = 0;
+        public static final int EXP = 0;
+    }
+    public class color {
+        public static final String ANSI_RESET = "\u001B[0m";
+        public static final String ANSI_BLACK = "\u001B[30m";
+        public static final String ANSI_RED = "\u001B[31m";
+        public static final String ANSI_GREEN = "\u001B[32m";
+        public static final String ANSI_YELLOW = "\u001B[33m";
+        public static final String ANSI_BLUE = "\u001B[34m";
+        public static final String ANSI_PURPLE = "\u001B[35m";
+        public static final String ANSI_CYAN = "\u001B[36m";
+    }
+
     private static boolean inGame = false;
-
-    private static int playerX;
-    private static int playerY;
-    private static int width;
-    private static int height;
-    private static int currentLevel = 1;
-    private static int gold = 0;
-    private static int hp = 100;
-    private static int str = 10;
-    private static int exp = 0;
-
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         clearConsole();
-        System.out.println("Welcome to the cursed realm of Rogue!");
-        System.out.println("Your sole purpose here is to amass treasures");
-        System.out.println("and ascend the unfathomable depths of THE DUNGEON.");
-        System.out.println("Remember, your journey shall end when darkness consumes you.");
+        System.out.println("Welcome to the " + color.ANSI_PURPLE + "cursed" + color.ANSI_RESET + " realm of Rogue!");
+        System.out.println("Your sole purpose here is to amass " + color.ANSI_YELLOW + "treasures" + color.ANSI_RESET);
+        System.out.println("and ascend the unfathomable depths of " + color.ANSI_RED + "THE DUNGEON" + color.ANSI_RESET + ".");
+        System.out.println("Remember, your journey shall end when " + color.ANSI_BLACK + "darkness" + color.ANSI_RESET + " consumes you.");
         System.out.println("---------------------------------------------------------------------");
 
         int quitAttempts = 0;
@@ -36,7 +83,7 @@ public class rogue {
                 System.out.println("3. Decrypt the Visual Scrolls");
                 System.out.println("4. Confront the Shadows");
                 System.out.println("5. Retreat from this Wretched Place");
-                System.out.print("What is your choice, adventurer? ");
+                System.out.print("What is your choice, " + color.ANSI_GREEN + "adventurer" + color.ANSI_RESET + "? ");
             }
 
             int choice = scanner.nextInt();
@@ -45,7 +92,7 @@ public class rogue {
                 switch (choice) {
                     case 1:
                         clearConsole();
-                        startNewGame();
+                        game();
                         break;
                     case 2:
                         clearConsole();
@@ -63,7 +110,7 @@ public class rogue {
                         if (quitAttempts == 2) {
                             clearConsole();
                             System.out.println("Alas, there is no escape. You are bound to this realm... forever");
-                            startNewGame();
+                            game();
                         } else {
                             if (quitAttempts == 0) {
                                 clearConsole();
@@ -83,25 +130,28 @@ public class rogue {
         }
     }   
 
-    public static void startNewGame() {
+    public static void game() {
         Scanner scanner = new Scanner(System.in);
         inGame = true;
-        width = 80;
-        height = 30;
-        currentLevel = 0;
-        gold = 0;
-        hp = 100;
-        str = 10;
-        exp = 0;
+        int width = GameStats.WIDTH;
+        int height = GameStats.HEIGHT;
+        int currentLevel = GameStats.CURRENT_LEVEL;
+        int gold = GameStats.GOLD;
+        int hp = CharacterStats.PLAYER_HEALTH;
+        int str = CharacterStats.PLAYER_DAMAGE;
+        int exp = GameStats.EXP;
         System.out.println("You step into the abyss, embarking on a new quest...");
-        System.out.println("| Level: " + currentLevel + " | Gold: " + gold + " | HP: " + hp + " | STR: " + str + " | EXP: " + exp + " |");
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
+        MapGenerator generator = new MapGenerator(width, height);
+        generator.displayMap();
+        System.out.println("");
+        System.out.println("--------------------------------------------------");
+        System.out.println("| Level: " + currentLevel + " | " + color.ANSI_YELLOW + "Gold: " + gold + color.ANSI_RESET + " | "  + color.ANSI_GREEN + "HP: " + hp + color.ANSI_RESET + 
+                           " | " + color.ANSI_RED + "STR: " + str + color.ANSI_RESET + " | " + color.ANSI_CYAN + "EXP: " + exp + color.ANSI_RESET + " |");
 
-        int choice = scanner.nextInt();
-
-
+        String choice = scanner.next();
     }
-
-    
 
     public static void clearConsole() {
         try {
@@ -116,7 +166,6 @@ public class rogue {
             System.out.println("Error purging the shadows.");
         }
     }
-
     public static void printCommands() {
         System.out.println("------------");
         System.out.println("Commands of the Chosen:");
@@ -143,7 +192,6 @@ public class rogue {
         System.out.println("Scroll the Manual: 'm'");
         System.out.println("------------");
     }
-
     public static void printVisualCues() {
         System.out.println("------------");
         System.out.println("Mystical Signs and Omens:");
@@ -155,18 +203,17 @@ public class rogue {
         System.out.println("Worn Path:              .");
         System.out.println("Ancient Doorway:        +");
         System.out.println("Nourishment:            %");
-        System.out.println("Elixir of Life:         !");
-        System.out.println("Mysterious Scroll:      ?");
+        //System.out.println("Elixir of Life:         !");
+        //System.out.println("Mysterious Scroll:      ?");
         System.out.println("Glittering Bounty:      $");
-        System.out.println("Enchanted Relics:       &");
-        System.out.println("Arcane Wand:            \"");
-        System.out.println("Stacked Relics:         ]");
-        System.out.println("Glimmering Ring:        =");
-        System.out.println("Adversaries (HP > 10):  )");
-        System.out.println("Adversaries (HP > 30):  }");
+        //System.out.println("Enchanted Relics:       &");
+        //System.out.println("Arcane Wand:            \"");
+        //System.out.println("Stacked Relics:         ]");
+        //System.out.println("Glimmering Ring:        =");
+        //System.out.println("Adversaries (HP > 10):  )");
+        //System.out.println("Adversaries (HP > 30):  }");
         System.out.println("------------");
     }
-
     public static void printEnemies() {
         System.out.println("------------");
         System.out.println("Adversaries of the Abyss:");
@@ -184,6 +231,7 @@ public class rogue {
         System.out.println("Werewolf:       W");
         System.out.println("Zombie:         Z");
         System.out.println("------------");
+        /*
         System.out.println("Artifacts and Relics:");
         System.out.println("------------");
         System.out.println("Potion of Vitality:        a");
@@ -199,5 +247,6 @@ public class rogue {
         System.out.println("Shortsword of Retribution: w");
         System.out.println("Longsword of Valor:        x");
         System.out.println("------------");
+        */
     }
 }
