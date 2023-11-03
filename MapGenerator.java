@@ -1,6 +1,10 @@
 package rogue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import rogue.rogue.Enemy;
 import rogue.rogue.Player;
 
 public class MapGenerator {
@@ -65,6 +69,7 @@ public class MapGenerator {
         */
     }
 
+    private List<Enemy> enemies = new ArrayList<>();
     private char[][] map;
     private int width;
     private int height;
@@ -173,7 +178,19 @@ public class MapGenerator {
             } else if (enemyType == forMap.DRAGON && currentLevel <= 49) {
                 enemyLevel = random.nextInt(Math.min(23, maxEnemyLevel));
             }
+            Enemy enemy = new Enemy(x, y, enemyType);
+            enemies.add(enemy);
             map[x][y] = enemyType;
+        }
+    }
+    public void moveEnemies() {
+        for (Enemy enemy : enemies) {
+            enemy.moveTowardsPlayer(player);
+        }
+    }
+    public void updateEnemyPositions() {
+        for (Enemy enemy : enemies) {
+            map[enemy.getX()][enemy.getY()] = enemy.getType();
         }
     }
 

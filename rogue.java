@@ -159,25 +159,40 @@ public class rogue {
                 String input = scanner.nextLine();
                 char choice = input.length() > 0 ? input.charAt(0) : ' ';
                 switch (choice) {
+                    //Move/Attack
                     case 'i':
                         clearConsole();
                         player.moveUp();
+                        enemy.moveTowardsPlayer(player);
                         mapGenerator.updateMap(player);
                         break;
                     case 'j':
                         clearConsole();
                         player.moveLeft();
+                        enemy.moveTowardsPlayer(player);
                         mapGenerator.updateMap(player);
                         break;
                     case 'k':
                         clearConsole();
                         player.moveDown();
+                        enemy.moveTowardsPlayer(player);
                         mapGenerator.updateMap(player);
                         break;
                     case 'l':
                         clearConsole();
                         player.moveRight();
+                        enemy.moveTowardsPlayer(player);
                         mapGenerator.updateMap(player);
+                        break;
+                    case 'q':
+                        clearConsole();
+                        System.out.println("This feature is not implemented");
+                        System.out.println("---------------------------------------------------");
+                        System.out.println("");
+                        break;
+                    case 'm':
+                        clearConsole();
+                        printCommands();
                         break;
                     default:
                         clearConsole();
@@ -199,7 +214,6 @@ public class rogue {
                                 " | " + color.ANSI_RED + "STR: " + str + color.ANSI_RESET + " | " + color.ANSI_CYAN + "EXP: " + exp + color.ANSI_RESET + " |");
                 System.out.println("---------------------------------------------------");
                 System.out.println("");
-            
             }
     }
 
@@ -254,21 +268,50 @@ public class rogue {
             return y;
         }
     }
-    
+
     public static class Enemy {
         private int x, y;
+        private char type;
     
+        public Enemy() {
+            this.x = 0;
+            this.y = 0;
+        }
+    
+        public Enemy(int x, int y, char type) {
+            this.x = x;
+            this.y = y;
+            this.type = type;
+        }
+
+        public int getX() {
+            return x;
+        }
+    
+        public int getY() {
+            return y;
+        }
+    
+        public char getType() {
+            return type;
+        }
+
         public void moveTowardsPlayer(Player player) {
-            if (player.getX() > x) {
-                x++;
-            } else if (player.getX() < x) {
-                x--;
-            }
+            int diffX = Math.abs(player.getX() - x);
+            int diffY = Math.abs(player.getY() - y);
     
-            if (player.getY() > y) {
-                y++;
-            } else if (player.getY() < y) {
-                y--;
+            if (diffX <= 5 && diffY <= 5) {
+                if (player.getX() > x) {
+                    x++;
+                } else if (player.getX() < x) {
+                    x--;
+                }
+    
+                if (player.getY() > y) {
+                    y++;
+                } else if (player.getY() < y) {
+                    y--;
+                }
             }
         }
     }
@@ -298,9 +341,9 @@ public class rogue {
         System.out.println("Attack West:       'j'");
         System.out.println("Attack South:      'k'");
         System.out.println("Attack East:       'l'");
-        System.out.println("Pick up Item:      ','");
-        System.out.println("Ascend Stairs:     '<'");
-        System.out.println("Descend Stairs:    '>'");
+        //System.out.println("Pick up Item:      ','");
+        //System.out.println("Ascend Stairs:     '<'");
+        //System.out.println("Descend Stairs:    '>'");
         //System.out.println("Rest in Shadows:   '.'");
         //System.out.println("Quaff a Potion:    'q'");
         //System.out.println("Read a Scroll:     'r'");
