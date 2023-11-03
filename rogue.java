@@ -2,6 +2,7 @@ package rogue;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 
@@ -132,6 +133,8 @@ public class rogue {
 
     public static void game() {
         Scanner scanner = new Scanner(System.in);
+        Player player = new Player();
+        Enemy enemy = new Enemy();
         inGame = true;
         int width = GameStats.WIDTH;
         int height = GameStats.HEIGHT;
@@ -141,16 +144,133 @@ public class rogue {
         int str = CharacterStats.PLAYER_DAMAGE;
         int exp = GameStats.EXP;
         System.out.println("You step into the abyss, embarking on a new quest...");
-        System.out.println("--------------------------------------------------");
+        System.out.println("---------------------------------------------------");
         System.out.println("");
-        MapGenerator generator = new MapGenerator(width, height);
-        generator.displayMap();
+        MapGenerator mapGenerator = new MapGenerator(width, height, player);
+        mapGenerator.displayMap(player);
         System.out.println("");
-        System.out.println("--------------------------------------------------");
+        System.out.println("---------------------------------------------------");
         System.out.println("| Level: " + currentLevel + " | " + color.ANSI_YELLOW + "Gold: " + gold + color.ANSI_RESET + " | "  + color.ANSI_GREEN + "HP: " + hp + color.ANSI_RESET + 
                            " | " + color.ANSI_RED + "STR: " + str + color.ANSI_RESET + " | " + color.ANSI_CYAN + "EXP: " + exp + color.ANSI_RESET + " |");
+        System.out.println("---------------------------------------------------");
+        System.out.println("");
 
-        String choice = scanner.next();
+            while (inGame) {
+                String input = scanner.nextLine();
+                char choice = input.length() > 0 ? input.charAt(0) : ' ';
+                switch (choice) {
+                    case 'i':
+                        clearConsole();
+                        player.moveUp();
+                        mapGenerator.updateMap(player);
+                        break;
+                    case 'j':
+                        clearConsole();
+                        player.moveLeft();
+                        mapGenerator.updateMap(player);
+                        break;
+                    case 'k':
+                        clearConsole();
+                        player.moveDown();
+                        mapGenerator.updateMap(player);
+                        break;
+                    case 'l':
+                        clearConsole();
+                        player.moveRight();
+                        mapGenerator.updateMap(player);
+                        break;
+                    default:
+                        clearConsole();
+                        System.out.println("Thy choice is tainted. Please enter a valid option.");
+                        System.out.println("---------------------------------------------------");
+                        System.out.println("");
+                        printCommands();
+                        continue;
+                }
+                System.out.println("Player position: " + player.getX() + ", " + player.getY());
+                System.out.println("---------------------------------------------------");
+                System.out.println("");
+                enemy.moveTowardsPlayer(player);
+
+                mapGenerator.displayMap(player);
+                System.out.println("");
+                System.out.println("---------------------------------------------------");
+                System.out.println("| Level: " + currentLevel + " | " + color.ANSI_YELLOW + "Gold: " + gold + color.ANSI_RESET + " | "  + color.ANSI_GREEN + "HP: " + hp + color.ANSI_RESET + 
+                                " | " + color.ANSI_RED + "STR: " + str + color.ANSI_RESET + " | " + color.ANSI_CYAN + "EXP: " + exp + color.ANSI_RESET + " |");
+                System.out.println("---------------------------------------------------");
+                System.out.println("");
+            
+            }
+    }
+
+    public static class Player {
+        private int previousX;
+        private int previousY;
+        private int x, y;
+        public Player() {
+            Random random = new Random();
+            this.x = random.nextInt(GameStats.WIDTH);
+            this.y = random.nextInt(GameStats.HEIGHT);
+        }
+        public void moveUp() {
+            if (this.y > 0) {
+                this.previousX = this.x;
+                this.previousY = this.y;
+                this.y--;
+            }
+        }
+        public void moveDown() {
+            if (this.y < GameStats.HEIGHT - 1) {
+                this.previousX = this.x;
+                this.previousY = this.y;
+                y++;
+            }
+        }
+        public void moveLeft() {
+            if (this.x > 0) {
+                this.previousX = this.x;
+                this.previousY = this.y;
+                x--;
+            }
+        }
+        public void moveRight() {
+            if (this.x < GameStats.WIDTH - 1) {
+                this.previousX = this.x;
+                this.previousY = this.y;
+                x++;
+            }
+        }
+        public int getPreviousX() {
+            return this.previousX;
+        }
+    
+        public int getPreviousY() {
+            return this.previousY;
+        }
+        public int getX() {
+            return x;
+        }
+        public int getY() {
+            return y;
+        }
+    }
+    
+    public static class Enemy {
+        private int x, y;
+    
+        public void moveTowardsPlayer(Player player) {
+            if (player.getX() > x) {
+                x++;
+            } else if (player.getX() < x) {
+                x--;
+            }
+    
+            if (player.getY() > y) {
+                y++;
+            } else if (player.getY() < y) {
+                y--;
+            }
+        }
     }
 
     public static void clearConsole() {
@@ -181,14 +301,14 @@ public class rogue {
         System.out.println("Pick up Item:      ','");
         System.out.println("Ascend Stairs:     '<'");
         System.out.println("Descend Stairs:    '>'");
-        System.out.println("Rest in Shadows:   '.'");
-        System.out.println("Quaff a Potion:    'q'");
-        System.out.println("Read a Scroll:     'r'");
-        System.out.println("Unequip:           'T'");
-        System.out.println("Manage Inventory:  'i'");
+        //System.out.println("Rest in Shadows:   '.'");
+        //System.out.println("Quaff a Potion:    'q'");
+        //System.out.println("Read a Scroll:     'r'");
+        //System.out.println("Unequip:           'T'");
+        //System.out.println("Manage Inventory:  'i'");
         System.out.println("Abandon Quest:     'q'");
-        System.out.println("Identify Item:     'I'");
-        System.out.println("Discard Items:     'd'");
+        //System.out.println("Identify Item:     'I'");
+        //System.out.println("Discard Items:     'd'");
         System.out.println("Scroll the Manual: 'm'");
         System.out.println("------------");
     }

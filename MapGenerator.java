@@ -1,6 +1,7 @@
 package rogue;
 
 import java.util.Random;
+import rogue.rogue.Player;
 
 public class MapGenerator {
     public class color {
@@ -69,13 +70,23 @@ public class MapGenerator {
     private int height;
     private int currentLevel;
     private Random random;
+    private Player player;
 
-    public MapGenerator(int width, int height) {
+    public MapGenerator(int width, int height, Player player) {
         this.width = width;
         this.height = height;
+        this.player = player;
         this.map = new char[width][height];
         this.random = new Random();
         initializeMap();
+    }
+
+    public void updateMap(Player player) {
+        // Clear the player's previous position
+        map[player.getPreviousX()][player.getPreviousY()] = forMap.FLOOR;
+
+        // Mark the player's new position
+        map[player.getX()][player.getY()] = forMap.PLAYER;
     }
 
     private void initializeMap() {
@@ -83,13 +94,11 @@ public class MapGenerator {
         fillMapWithEnemies();
         fillMapWithLoot();
         placeStairs();
-        spawnPlayer();
+        placePlayerOnMap(player);
     }
 
-    public void spawnPlayer() {
-        int playerX = random.nextInt(width);
-        int playerY = random.nextInt(height);
-        map[playerX][playerY] = forMap.PLAYER;
+    public void placePlayerOnMap(Player player) {
+        map[player.getX()][player.getY()] = forMap.PLAYER;
     }
 
     private void fillMapWithFloors() {
@@ -229,7 +238,7 @@ public class MapGenerator {
         }
     }
 
-    public void displayMap() {
+    public void displayMap(Player player) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 char tile = map[x][y];
